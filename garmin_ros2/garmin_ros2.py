@@ -55,7 +55,9 @@ class GarminPublisher(Node):
 
             self.publisher_.publish(msg)
             self.get_logger().info('Publishing: Garmin GPS Fix')
-        
+        except Exception:
+            pass
+
             
 
 def main(args=None):
