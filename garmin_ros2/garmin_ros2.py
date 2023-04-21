@@ -34,27 +34,29 @@ class GarminPublisher(Node):
 
         msg.header.stamp = self.get_clock().now().to_msg()
 
-        if line[2] == "":
-            lat = 0.0
-        else:
-            lat = int(line[2][:2]) + (float(line[2][2:]) / 60)
-            lat *= 1 if line[3] == "N" else -1
-        msg.latitude = lat
+        try:
+            if line[2] == "":
+                lat = 0.0
+            else:
+                lat = int(line[2][:2]) + (float(line[2][2:]) / 60)
+                lat *= 1 if line[3] == "N" else -1
+            msg.latitude = lat
 
-        if line[4] == "":
-            lon = 0.0
-        else:
-            lon = int(line[4][:3]) + (float(line[4][3:]) / 60)
-            lon *= 1 if line[5] == "E" else -1
-        msg.longitude = lon
+            if line[4] == "":
+                lon = 0.0
+            else:
+                lon = int(line[4][:3]) + (float(line[4][3:]) / 60)
+                lon *= 1 if line[5] == "E" else -1
+            msg.longitude = lon
 
-        msg.altitude = float(line[9]) if line[9] != "" else 0.0
-        msg.status.service = 1 # GPS
-        msg.status.status = 1 if line[6] == "1" else 0
+            msg.altitude = float(line[9]) if line[9] != "" else 0.0
+            msg.status.service = 1 # GPS
+            msg.status.status = 1 if line[6] == "1" else 0
 
-        self.publisher_.publish(msg)
-        self.get_logger().info('Publishing: Garmin GPS Fix')
-
+            self.publisher_.publish(msg)
+            self.get_logger().info('Publishing: Garmin GPS Fix')
+        
+            
 
 def main(args=None):
     rclpy.init(args=args)
