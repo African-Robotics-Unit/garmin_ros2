@@ -34,15 +34,21 @@ class GarminPublisher(Node):
 
         msg.header.stamp = self.get_clock().now().to_msg()
 
-        lat = int(line[2][:2]) + (float(line[2][2:]) / 60)
-        lat *= 1 if line[3] == "N" else -1
+        if line[2] == "":
+            lat = 0
+        else:
+            lat = int(line[2][:2]) + (float(line[2][2:]) / 60)
+            lat *= 1 if line[3] == "N" else -1
         msg.latitude = lat
 
-        lon = int(line[4][:3]) + (float(line[4][3:]) / 60)
-        lon *= 1 if line[5] == "E" else -1
+        if line[4] == "":
+            lon = 0
+        else:
+            lon = int(line[4][:3]) + (float(line[4][3:]) / 60)
+            lon *= 1 if line[5] == "E" else -1
         msg.longitude = lon
 
-        msg.altitude = float(line[9])
+        msg.altitude = float(line[9]) if line[9] != "" else 0
         msg.status.service = 1 # GPS
         msg.status.status = 1 if line[6] == "1" else 0
 
